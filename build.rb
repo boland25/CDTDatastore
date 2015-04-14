@@ -6,8 +6,9 @@
 #  -platform-version iOS version to test agasint (only supported for iOS)
 #  -hardware the simultated hardware to test against eg iPhone 4S (only supported for iOS)
 #  -D* gets passed into build.
-#  
+#  -nightly true | false  default is false
 #
+require 'fileutils'
 
 params = {}
 arg_is_value = false 
@@ -34,6 +35,7 @@ params["platform"] = "OSX" unless params["platform"]
 params["couch"] = "couchdb1.6" unless params["couch"]
 params["platform-version"] = "latest" unless params["platform-version"]
 params["hardware"] = "iPhone 4S" unless params["hardware"]
+params["nightly"] = "false" unless params["nightly"]
 
 #kill any docker container that may be running on the machine.
 #we don't want to effected by another failing build
@@ -86,9 +88,20 @@ ENV.each do |key,value|
 end
 
 if params["platform"] == "OSX"
-	system("xcodebuild -workspace ./ReplicationAcceptance/ReplicationAcceptance.xcworkspace -scheme 'RA_Tests_OSX' -destination 'platform=OS X' #{replication_options.join(" ")} test | xcpretty -r junit; exit ${PIPESTATUS[0]}")
+
+	system("xcodebuild -workspace CDTDatastore.xcworkspace -scheme 'Tests OSX' -destination 'platform=OS X' #{replication_options.join(" ")} test | xcpretty -r junit ; exit ${PIPESTATUS[0]}")
+
+	if(params["nightly"] == "true")
+		FileUtils.mv("build/reports/junit.xml","build/reports/osx.xml")
+		system("xcodebuild -workspace ./ReplicationAcceptance/ReplicationAcceptance.xcworkspace -scheme 'RA_Tests_OSX' -destination 'platform=OS X' #{replication_options.join(" ")} test | xcpretty -r junit; exit ${PIPESTATUS[0]}")
+	end
 elsif params["platform"] == "iOS"
-	system("xcodebuild -workspace ./ReplicationAcceptance/ReplicationAcceptance.xcworkspace -scheme 'RA_Tests' -destination 'platform=iOS Simulator,OS=#{params["platform-version"]},name=#{params["hardware"]}' #{replication_options.join(" ")}  test | xcpretty -r junit; exit ${PIPESTATUS[0]}")
+
+	system("xcodebuild -workspace CDTDatastore.xcworkspace -scheme 'Tests iOS' -destination 'platform=iOS Simulator,OS=#{params["platform-version"]},name=#{params["hardware"]}' #{replication_options.join(" ")} test | xcpretty -r junit ; exit ${PIPESTATUS[0]}")
+	if(params["nightly"] == "true")
+		FileUtils.mv("build/reports/junit.xml","build/reports/iOS.xml")
+		system("xcodebuild -workspace ./ReplicationAcceptance/ReplicationAcceptance.xcworkspace -scheme 'RA_Tests' -destination 'platform=iOS Simulator,OS=#{params["platform-version"]},name=#{params["hardware"]}' #{replication_options.join(" ")}  test | xcpretty -r junit; exit ${PIPESTATUS[0]}")
+	end
 end
 
 #get the build exit code, will exit with this after tearing down the docker container
