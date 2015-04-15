@@ -6,7 +6,7 @@
 //
 //
 
-#import "CocoaLumberjack.h"
+#import <CocoaLumberjack/CocoaLumberjack.h>
 
 #ifndef _CDTLogging_h
 #define _CDTLogging_h
