@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
   s.osx.exclude_files = 'Classes/ios'
   #s.public_header_files = 'Classes/common/*.h'
 
-  s.dependency 'FMDB', :git => 'https://github.com/robertmryan/fmdb.git'
+  s.dependency 'FMDB', '2.5'
   s.dependency 'CocoaLumberjack', '2.0.0-rc2'
   
   s.ios.resource            = 'Vendor/CocoaLumberjack.framework'
