@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
   #s.public_header_files = 'Classes/common/*.h'
 
   s.dependency 'FMDB', '= 2.3'
-  s.dependency 'CocoaLumberjack', '~> 2.0'
+  s.dependency 'CocoaLumberjack', '2.0.0-rc2'
   
   s.ios.resource            = 'Vendor/CocoaLumberjack.framework'
   s.ios.xcconfig            = {'LD_RUNPATH_SEARCH_PATHS' => '@loader_path/../Frameworks'}
