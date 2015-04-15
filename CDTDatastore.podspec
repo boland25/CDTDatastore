@@ -38,10 +38,13 @@ Pod::Spec.new do |s|
 
   s.ios.exclude_files = 'Classes/osx'
   s.osx.exclude_files = 'Classes/ios'
-  s.public_header_files = 'Classes/common/*.h'
+  #s.public_header_files = 'Classes/common/*.h'
 
   s.dependency 'FMDB', '= 2.3'
   s.dependency 'CocoaLumberjack', '~> 2.0'
+  
+  s.ios.resource            = 'Vendor/CocoaLumberjack.framework'
+  s.ios.xcconfig            = {'LD_RUNPATH_SEARCH_PATHS' => '@loader_path/../Frameworks'}
 
   s.frameworks = 'SystemConfiguration'
   s.library = 'sqlite3', 'z'
